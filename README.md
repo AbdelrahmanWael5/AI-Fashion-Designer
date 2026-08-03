@@ -1,170 +1,217 @@
-# 👔 Fashion Text-to-Image Generation with SDXL
+# 👔 AI Fashion Designer
 
-A fashion-focused text-to-image generation system built by fine-tuning Stable Diffusion XL (SDXL) on a custom apparel dataset created from VITON-HD images and automatically generated captions.
+**Conversational Multi-Agent Fashion Image Generation using Large Language Models and Fine-Tuned Stable Diffusion XL**
+
+Official implementation of the **AI Fashion Designer** framework.
+
+<p>
+
+<a href="https://portfolio-psi-one-or9jrg8ci8.vercel.app/projects/fashion-text-to-image">
+    <img src="https://img.shields.io/badge/Project%20Page-Website-blue">
+</a>
+
+<img src="https://img.shields.io/badge/Demo-Coming%20Soon-orange" alt="Demo">
+
+</p>
 
 ---
 
-## Overview
+# Overview
 
-This project focuses on generating high-quality fashion images from natural language prompts.
+<p align="center">
+    <img src="assets/framework.png" width="100%">
+</p>
 
-To build a specialized fashion generation model, I first generated descriptive captions for clothing images using **Qwen2.5-VL**. The generated captions were then cleaned and preprocessed before constructing a custom image-text dataset used for **SDXL fine-tuning**.
-
-The project covers the complete workflow of a modern multimodal generative AI pipeline, including data preparation, caption generation, diffusion model fine-tuning, and deployment through an interactive demo.
+> **Abstract**
+>
+> AI Fashion Designer is an end-to-end conversational fashion image generation framework that combines Large Language Models with a fine-tuned Stable Diffusion XL model. Instead of requiring users to manually engineer prompts, the system employs a collaborative multi-agent architecture that interacts naturally with users, collects garment attributes through conversation, maintains a structured representation of the desired clothing, and automatically constructs the prompt required by the diffusion model.
+>
+> The framework consists of three major stages: automatic fashion dataset preparation, supervised fine-tuning of Stable Diffusion XL on a custom fashion image-caption dataset, and a conversational multi-agent framework that transforms natural language into high-quality fashion images.
 
 ---
 
-## Dataset
+# Requirements
 
-This project uses the **VITON-HD** dataset, a high-resolution virtual try-on dataset widely used in fashion-related computer vision research.
+Clone the repository and install the required dependencies.
 
-Official repository:
+```bash
+git clone https://github.com/<your_username>/AI-Fashion-Designer.git
+cd AI-Fashion-Designer
+
+conda create -n fashion-designer python=3.10
+conda activate fashion-designer
+
+pip install -r requirements.txt
+```
+
+---
+
+# Dataset Preparation
+
+The fashion image generation model is trained on a custom image-caption dataset constructed from the **VITON-HD** dataset.
+
+## VITON-HD
+
+Download the VITON-HD dataset from its official repository.
 
 https://github.com/shadow2496/VITON-HD
 
-Instead of relying on manually provided descriptions, captions were automatically generated for the clothing images using **Qwen2.5-VL**. These captions were subsequently cleaned, normalized, and filtered to improve quality and consistency before being used for training.
+---
 
-The processed caption files are available under:
+## Caption Generation
+
+Garment captions are automatically generated using **Qwen2.5-VL**.
+
+Each clothing image is converted into a detailed textual description capturing attributes such as:
+
+- Category
+- Color
+- Material
+- Fit
+- Neckline
+- Sleeve Length
+- Pattern
+
+---
+
+## Caption Preprocessing
+
+The generated captions are cleaned and standardized through a preprocessing pipeline that:
+
+- Removes noisy information
+- Standardizes fashion terminology
+- Normalizes attribute values
+- Produces a unified prompt format
+
+---
+
+## Final Dataset
+
+The resulting image-caption pairs are used for supervised fine-tuning of Stable Diffusion XL.
+
+---
+
+# Fine-Tuning Stable Diffusion XL
+
+Stable Diffusion XL is adapted to the fashion domain using the prepared image-caption dataset.
+
+Training follows the standard SDXL fine-tuning strategy:
+
+- Frozen Variational Autoencoder (VAE)
+- Frozen Dual Text Encoders
+- Fine-Tuned UNet
+
+This enables the model to learn detailed relationships between garment descriptions and visual appearance while preserving the strong visual priors of the pretrained model.
+
+---
+
+# Conversational Multi-Agent Framework
+
+The second stage of the project introduces a conversational AI framework that removes the need for manual prompt engineering.
+
+## Fashion Consultant Agent
+
+The Fashion Consultant interacts naturally with users by:
+
+- Understanding clothing requests
+- Asking follow-up questions
+- Providing fashion recommendations
+- Collecting missing garment attributes
+
+---
+
+## Attribute Extractor Agent
+
+The Attribute Extractor continuously analyzes the conversation to:
+
+- Extract clothing attributes
+- Detect user modifications
+- Update the structured clothing representation
+- Preserve previously collected information
+
+---
+
+## Structured Clothing Representation
+
+The extracted attributes are stored as a structured clothing description.
+
+Example:
+
+```json
+{
+  "category": "Hoodie",
+  "color": "Black",
+  "material": "Cotton",
+  "fit": "Oversized",
+  "neckline": "Hooded",
+  "sleeve_length": "Long",
+  "pattern": "Solid"
+}
+```
+
+The final representation is automatically converted into the prompt expected by the fine-tuned Stable Diffusion XL model.
+
+---
+
+# Inference
+
+The complete inference pipeline follows the workflow below:
 
 ```text
-├── data/
-│   ├── train/
-│   │   └── train.jsonl
-│   ├── val/
-│   │   └── val.jsonl
-│   └── test/
-│       └── test.jsonl
+User Request
+      ↓
+Fashion Consultant Agent
+      ↓
+Attribute Extractor Agent
+      ↓
+Structured Clothing Representation
+      ↓
+Prompt Generation
+      ↓
+Fine-Tuned Stable Diffusion XL
+      ↓
+Generated Fashion Image
+```
+
+Run inference using:
+
+```bash
+python app.py
 ```
 
 ---
 
-## Data Split
+# Demo
 
-The original VITON-HD dataset contains:
-
-| Split        | Samples |
-| ------------ | ------: |
-| Training Set |  11,647 |
-| Test Set     |   2,032 |
-
-To create a validation set for model development and monitoring, a subset of **1,165 samples** was held out from the original training split.
-
-The final dataset configuration used throughout training was:
-
-| Split          | Samples |
-| -------------- | ------: |
-| Training Set   |  10,482 |
-| Validation Set |   1,165 |
-| Test Set       |   2,032 |
+A demonstration video showcasing the complete conversational workflow will be released soon.
 
 ---
 
-## Methodology
+# Acknowledgements
 
-```text
-VITON-HD Images
-        ↓
-Qwen2.5-VL Caption Generation
-        ↓
-Caption Cleaning & Preprocessing
-        ↓
-Custom Image-Text Dataset Creation
-        ↓
-Train / Validation / Test Split
-        ↓
-SDXL Fine-Tuning
-        ↓
-Fashion Image Generation
+This project builds upon several outstanding open-source projects, including:
+
+- Stable Diffusion XL
+- Hugging Face Diffusers
+- Hugging Face Transformers
+- Qwen2.5-VL
+- LangGraph
+- VITON-HD
+
+We sincerely thank the authors for making their work publicly available.
+
+---
+
+# Citation
+
+If you find this project useful, please consider citing it.
+
+```bibtex
+Coming soon.
 ```
 
 ---
 
-## Project Structure
+# License
 
-```text
-fashion-text-to-image-sdxl/
-
-├── app.py
-├── inference.py
-
-├── data/
-│   ├── train/
-│   │   └── train.jsonl
-│   ├── val/
-│   │   └── val.jsonl
-│   └── test/
-│       └── test.jsonl
-
-└── src/
-    ├── dataset/
-    │   └── vitonhd.py
-    │
-    ├── preprocessing/
-    │   ├── generate_captions.ipynb
-    │   ├── prepare_captions.ipynb
-    │   ├── train_captions.jsonl
-    │   └── test_captions.jsonl
-    │
-    ├── monitoring/
-    │
-    └── train.ipynb
-```
-
----
-
-## Features
-
-* Automatic caption generation using Qwen2.5-VL
-* Caption cleaning and preprocessing pipeline
-* Custom fashion image-text dataset creation
-* SDXL fine-tuning for apparel generation
-* Fashion-focused text-to-image synthesis
-* Interactive Streamlit inference demo
-
----
-
-## Tech Stack
-
-* PyTorch
-* Hugging Face Transformers
-* Diffusers
-* Qwen2.5-VL
-* Stable Diffusion XL (SDXL)
-* Streamlit
-
----
-
-## Example Prompts
-
-* Luxury black leather jacket
-* Oversized hoodie
-* Green denim jacket
-* Formal black shirt
-* Floral t-shirt
-
----
-
-## Demo
-
-The repository includes an interactive Streamlit application for real-time image generation.
-
-A demonstration video is available in the corresponding LinkedIn post.
-Link: 
-https://www.linkedin.com/posts/abdelrahman-wael-ai_ai-generativeai-computervision-activity-7472330762009231362-vJJp?utm_source=share&utm_medium=member_desktop&rcm=ACoAAESxZ4gBL6KBYIJCpRjAZ_LaewDhyTR2aks
-
----
-
-## Future Improvements
-
-* Training on larger fashion datasets
-* Advanced prompt engineering
-* Model deployment on cloud infrastructure
-
----
-
-## Acknowledgments
-
-* Stable Diffusion XL (SDXL)
-* Qwen2.5-VL
-* VITON-HD Dataset
-* Hugging Face Diffusers
+Coming soon.
