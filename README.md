@@ -10,7 +10,11 @@ Official implementation of the **AI Fashion Designer** framework.
     <img src="https://img.shields.io/badge/Project%20Page-Website-blue">
 </a>
 
-<img src="https://img.shields.io/badge/Demo-Coming%20Soon-orange" alt="Demo">
+<a href="ai_fashion_designer.pdf">
+    <img src="https://img.shields.io/badge/Documentation-PDF-red">
+</a>
+
+<img src="https://img.shields.io/badge/Demo-Coming%20Soon-orange">
 
 </p>
 
@@ -19,7 +23,11 @@ Official implementation of the **AI Fashion Designer** framework.
 # Overview
 
 <p align="center">
-    <img src="assets/framework.png" width="100%">
+    <img src="assets/overall_framework.png" width="100%">
+</p>
+
+<p align="center">
+<b>Figure 1.</b> End-to-end architecture of the AI Fashion Designer framework.
 </p>
 
 > **Abstract**
@@ -35,11 +43,11 @@ Official implementation of the **AI Fashion Designer** framework.
 Clone the repository and install the required dependencies.
 
 ```bash
-git clone https://github.com/<your_username>/AI-Fashion-Designer.git
-cd AI-Fashion-Designer
+git clone https://github.com/<your_username>/ai-fashion-designer.git
+cd ai-fashion-designer
 
-conda create -n fashion-designer python=3.10
-conda activate fashion-designer
+conda create -n ai-fashion-designer python=3.10
+conda activate ai-fashion-designer
 
 pip install -r requirements.txt
 ```
@@ -62,7 +70,7 @@ https://github.com/shadow2496/VITON-HD
 
 Garment captions are automatically generated using **Qwen2.5-VL**.
 
-Each clothing image is converted into a detailed textual description capturing attributes such as:
+Each garment image is converted into a detailed textual description containing attributes such as:
 
 - Category
 - Color
@@ -76,18 +84,20 @@ Each clothing image is converted into a detailed textual description capturing a
 
 ## Caption Preprocessing
 
-The generated captions are cleaned and standardized through a preprocessing pipeline that:
+The generated captions are automatically cleaned and standardized to produce a consistent prompt format suitable for Stable Diffusion XL fine-tuning.
+
+The preprocessing pipeline:
 
 - Removes noisy information
-- Standardizes fashion terminology
 - Normalizes attribute values
-- Produces a unified prompt format
+- Standardizes fashion terminology
+- Produces unified image-caption pairs
 
 ---
 
 ## Final Dataset
 
-The resulting image-caption pairs are used for supervised fine-tuning of Stable Diffusion XL.
+The resulting image-caption pairs are used to fine-tune Stable Diffusion XL for fashion image generation.
 
 ---
 
@@ -95,85 +105,91 @@ The resulting image-caption pairs are used for supervised fine-tuning of Stable 
 
 Stable Diffusion XL is adapted to the fashion domain using the prepared image-caption dataset.
 
-Training follows the standard SDXL fine-tuning strategy:
+The fine-tuning strategy includes:
 
 - Frozen Variational Autoencoder (VAE)
 - Frozen Dual Text Encoders
 - Fine-Tuned UNet
 
-This enables the model to learn detailed relationships between garment descriptions and visual appearance while preserving the strong visual priors of the pretrained model.
+This enables the model to accurately generate clothing images that follow detailed garment descriptions while preserving the strong visual capabilities of the pretrained SDXL model.
 
 ---
 
 # Conversational Multi-Agent Framework
 
-The second stage of the project introduces a conversational AI framework that removes the need for manual prompt engineering.
+The second stage introduces a conversational AI system that eliminates manual prompt engineering.
 
 ## Fashion Consultant Agent
 
-The Fashion Consultant interacts naturally with users by:
+The Fashion Consultant interacts naturally with users to:
 
-- Understanding clothing requests
-- Asking follow-up questions
-- Providing fashion recommendations
-- Collecting missing garment attributes
+- Understand clothing requests
+- Ask follow-up questions
+- Provide fashion recommendations
+- Collect missing garment attributes
 
 ---
 
 ## Attribute Extractor Agent
 
-The Attribute Extractor continuously analyzes the conversation to:
+The Attribute Extractor continuously analyzes the conversation and:
 
-- Extract clothing attributes
-- Detect user modifications
-- Update the structured clothing representation
-- Preserve previously collected information
+- Extracts clothing attributes
+- Detects modifications
+- Updates the structured clothing representation
+- Preserves conversation context
 
 ---
 
 ## Structured Clothing Representation
 
-The extracted attributes are stored as a structured clothing description.
+All collected attributes are maintained within a shared structured representation.
 
 Example:
 
 ```json
 {
-  "category": "Hoodie",
-  "color": "Black",
-  "material": "Cotton",
+  "category": "Jacket",
+  "color": "Brown",
+  "material": "Leather",
   "fit": "Oversized",
-  "neckline": "Hooded",
+  "neckline": "Collared",
   "sleeve_length": "Long",
   "pattern": "Solid"
 }
 ```
 
-The final representation is automatically converted into the prompt expected by the fine-tuned Stable Diffusion XL model.
+Once all required attributes have been collected, the representation is automatically converted into the prompt format expected by the fine-tuned Stable Diffusion XL model.
 
 ---
 
-# Inference
+# Inference Pipeline
 
-The complete inference pipeline follows the workflow below:
+The complete inference workflow is illustrated below.
 
 ```text
 User Request
-      ↓
+        │
+        ▼
 Fashion Consultant Agent
-      ↓
+        │
+        ▼
 Attribute Extractor Agent
-      ↓
+        │
+        ▼
 Structured Clothing Representation
-      ↓
-Prompt Generation
-      ↓
+        │
+        ▼
+Prompt Builder
+        │
+        ▼
 Fine-Tuned Stable Diffusion XL
-      ↓
+        │
+        ▼
 Generated Fashion Image
 ```
 
-Run inference using:
+Run the application using:
 
 ```bash
 python app.py
@@ -181,21 +197,45 @@ python app.py
 
 ---
 
-# Demo
+# Project Structure
 
-A demonstration video showcasing the complete conversational workflow will be released soon.
+```text
+ai-fashion-designer/
+
+├── app.py
+├── inference.py
+├── requirements.txt
+
+├── agents/
+│   ├── fashion_consultant.py
+│   ├── attribute_extractor.py
+│   ├── prompt_builder.py
+│   └── ...
+
+├── dataset/
+│
+├── preprocessing/
+│
+├── training/
+│
+├── models/
+│
+├── assets/
+│
+└── README.md
+```
 
 ---
 
 # Acknowledgements
 
-This project builds upon several outstanding open-source projects, including:
+This project builds upon several outstanding open-source projects.
 
 - Stable Diffusion XL
 - Hugging Face Diffusers
 - Hugging Face Transformers
-- Qwen2.5-VL
 - LangGraph
+- Qwen2.5-VL
 - VITON-HD
 
 We sincerely thank the authors for making their work publicly available.
@@ -204,7 +244,7 @@ We sincerely thank the authors for making their work publicly available.
 
 # Citation
 
-If you find this project useful, please consider citing it.
+If you find this project useful, please consider citing the accompanying documentation.
 
 ```bibtex
 Coming soon.
