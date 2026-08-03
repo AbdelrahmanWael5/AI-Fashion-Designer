@@ -10,10 +10,6 @@ Official implementation of the **AI Fashion Designer** framework.
     <img src="https://img.shields.io/badge/Project%20Page-Website-blue">
 </a>
 
-<a href="ai_fashion_designer.pdf">
-    <img src="https://img.shields.io/badge/Documentation-PDF-red">
-</a>
-
 <img src="https://img.shields.io/badge/Demo-Coming%20Soon-orange">
 
 </p>
@@ -23,7 +19,7 @@ Official implementation of the **AI Fashion Designer** framework.
 # Overview
 
 <p align="center">
-    <img src="assets/overall_framework.png" width="100%">
+    <img src="overall_framework.png" width="100%">
 </p>
 
 <p align="center">
